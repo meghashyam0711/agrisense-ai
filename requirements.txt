@@ -1,0 +1,19 @@
+# Core Web Framework
+fastapi>=0.110.0,<0.112.0
+uvicorn[standard]>=0.28.0,<0.31.0
+pydantic>=2.6.0,<3.0.0
+pydantic-settings>=2.2.0,<3.0.0
+
+# Database & Async IO
+sqlalchemy>=2.0.28,<2.1.0
+httpx>=0.27.0,<0.28.0
+python-dotenv>=1.0.1,<2.0.0
+
+# Machine Learning & Data Processing
+scikit-learn>=1.4.1,<1.6.0
+pandas>=2.2.1,<2.3.0
+numpy>=1.26.4,<2.0.0
+joblib>=1.3.2,<1.5.0
+
+# Testing & Linting
+pytest>=8.1.1,<9.0.0

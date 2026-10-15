@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriSense-AI | Tamil Nadu Paddy Yield Prediction & Precision Farming</title>
+  <meta name="description" content="AI-powered crop yield prediction, agro-meteorological intelligence, and TNAU-aligned optimization advisory for paddy farmers in Tamil Nadu.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Top Navigation & Brand Bar -->
+  <header class="header-wrap">
+    <nav class="navbar" aria-label="Main Navigation">
+      <div class="brand-group">
+        <div class="brand-icon" aria-hidden="true">
+          <!-- Rice Plant / Sprout SVG -->
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 20h10" />
+            <path d="M10 20c0-4 1.5-7.5 4-10" />
+            <path d="M12 20c0-6 3-10 8-12" />
+            <path d="M4 14c4 0 7-1.5 9-4" />
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1 data-i18n="brand_title">AgriSense-AI</h1>
+          <span data-i18n="brand_subtitle">Paddy Precision Farming</span>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="nav-tabs" role="tablist">
+        <button class="nav-tab-btn active" role="tab" aria-selected="true" data-tab="dashboard" data-i18n="nav_dashboard">
+          <span>📊</span> Dashboard
+        </button>
+        <button class="nav-tab-btn" role="tab" aria-selected="false" data-tab="prediction" data-i18n="nav_prediction">
+          <span>🌾</span> Yield Prediction
+        </button>
+        <button class="nav-tab-btn" role="tab" aria-selected="false" data-tab="weather" data-i18n="nav_weather">
+          <span>🌦️</span> Weather
+        </button>
+        <button class="nav-tab-btn" role="tab" aria-selected="false" data-tab="soil" data-i18n="nav_soil">
+          <span>🧪</span> Soil Analysis
+        </button>
+        <button class="nav-tab-btn" role="tab" aria-selected="false" data-tab="recommendations" data-i18n="nav_recommendations">
+          <span>💡</span> Recommendations
+        </button>
+        <button class="nav-tab-btn" role="tab" aria-selected="false" data-tab="history" data-i18n="nav_history">
+          <span>📜</span> History
+        </button>
+      </div>
+
+      <!-- Language Selector -->
+      <div class="lang-switch-wrap" role="group" aria-label="Language Selector">
+        <button id="lang-en" class="lang-toggle-btn active" type="button" aria-pressed="true">EN</button>
+        <button id="lang-ta" class="lang-toggle-btn" type="button" aria-pressed="false">தமிழ்</button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main View Container -->
+  <main class="main-wrapper">
+
+    <!-- ========================================== -->
+    <!-- 1. DASHBOARD VIEW                          -->
+    <!-- ========================================== -->
+    <section id="tab-dashboard" class="tab-view active" role="tabpanel" aria-labelledby="dash-heading">
+      <div class="page-header">
+        <div>
+          <span class="badge badge-green" data-i18n="badge_tn_cauvery">Tamil Nadu Paddy System</span>
+          <h2 id="dash-heading" data-i18n="dash_title" style="margin-top: 0.35rem;">Farmer Overview & Farm Status</h2>
+          <p data-i18n="dash_subtitle">Real-time crop indicators, active meteorological trends, and yield intelligence</p>
+        </div>
+        <div style="display: flex; gap: 0.75rem;">
+          <button id="dash-btn-predict" class="btn btn-primary btn-sm" type="button" data-i18n="btn_run_prediction">
+            Run New Yield Prediction
+          </button>
+          <button id="dash-btn-recom" class="btn btn-secondary btn-sm" type="button" data-i18n="btn_view_recommendations">
+            View Smart Advisory
+          </button>
+        </div>
+      </div>
+
+      <!-- 4 Overview Metric Cards -->
+      <div class="grid-4">
+        <!-- Predicted Yield Card -->
+        <div class="metric-card">
+          <div class="metric-top">
+            <span class="metric-title" data-i18n="card_predicted_yield">Predicted Yield</span>
+            <div class="metric-icon-bubble">🌾</div>
+          </div>
+          <div class="metric-val">46.5 <span class="metric-unit" data-i18n="card_yield_unit">Q/ha</span></div>
+          <div class="metric-desc" data-i18n="card_yield_sub">Estimated from current district soil & weather baseline</div>
+          <div style="margin-top: 0.75rem;">
+            <span class="badge badge-green" data-i18n="stat_state_avg">TN State Avg: 38.5 Q/ha</span>
+          </div>
+        </div>
+
+        <!-- Weather Preview Card -->
+        <div class="metric-card">
+          <div class="metric-top">
+            <span class="metric-title" data-i18n="card_weather_now">Current Weather</span>
+            <div class="metric-icon-bubble">🌦️</div>
+          </div>
+          <div class="metric-val" id="dash-weather-temp">31.5°C</div>
+          <div class="metric-desc">
+            <span id="dash-weather-district" style="color: #ffffff; font-weight: 600;">Thanjavur</span> &bull; 
+            <span id="dash-weather-cond">Partly Cloudy</span>
+          </div>
+          <div style="margin-top: 0.75rem;">
+            <span class="badge badge-cyan">Humidity: 78% | Rain: 4.2mm</span>
+          </div>
+        </div>
+
+        <!-- Soil Moisture Card -->
+        <div class="metric-card">
+          <div class="metric-top">
+            <span class="metric-title" data-i18n="card_soil_moisture">Soil Moisture</span>
+            <div class="metric-icon-bubble">💧</div>
+          </div>
+          <div class="metric-val">74 <span class="metric-unit">%</span></div>
+          <div class="metric-desc" data-i18n="card_moisture_sub">Optimal for vegetative tillering stage</div>
+          <div style="margin-top: 0.75rem;">
+            <span class="badge badge-green">Field Saturation: Good</span>
+          </div>
+        </div>
+
+        <!-- Farm Status Card -->
+        <div class="metric-card">
+          <div class="metric-top">
+            <span class="metric-title" data-i18n="card_farm_status">Active Season Status</span>
+            <div class="metric-icon-bubble">🌱</div>
+          </div>
+          <div class="metric-val" style="font-size: 1.6rem;" data-i18n="card_farm_status_val">Samba 2026</div>
+          <div class="metric-desc" data-i18n="card_farm_sub">Days to panicle initiation: 24 days</div>
+          <div style="margin-top: 0.75rem;">
+            <span class="badge badge-amber">Stage: Active Tillering</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dashboard Interactive Split: Gauges & Agronomic Highlights -->
+      <div class="layout-2col">
+        <!-- Gauges Panel -->
+        <div class="glass-panel">
+          <h3 style="font-size: 1.1rem; color: #ffffff; margin-bottom: 1.25rem;">Key Field Health Gauges</h3>
+          <div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 1.5rem;">
+            <div id="dash-moisture-gauge-container"></div>
+            <div id="dash-yield-gauge-container"></div>
+          </div>
+          <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted);">
+            <span>Sensor Source: Automated Field Node</span>
+            <span>Target Benchmark: 48.0 Q/ha</span>
+          </div>
+        </div>
+
+        <!-- Agronomic Bulletins -->
+        <div class="glass-panel">
+          <h3 style="font-size: 1.1rem; color: #ffffff; margin-bottom: 1rem;" data-i18n="recent_activity_title">
+            Recent Agronomic Alerts & Advisories
+          </h3>
+          <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+            <div style="padding: 0.85rem; background: rgba(255,255,255,0.025); border-left: 3px solid var(--accent-amber); border-radius: 4px;">
+              <div style="font-size: 0.85rem; font-weight: 600; color: #ffffff;">Weather Alert: Showers in 48h</div>
+              <div style="font-size: 0.775rem; color: var(--text-muted); margin-top: 0.2rem;">
+                Cauvery delta districts may receive light to moderate rainfall. Postpone urea top dressing.
+              </div>
+            </div>
+            <div style="padding: 0.85rem; background: rgba(255,255,255,0.025); border-left: 3px solid var(--accent-green); border-radius: 4px;">
+              <div style="font-size: 0.85rem; font-weight: 600; color: #ffffff;">Fertilizer Window: Tillering Split</div>
+              <div style="font-size: 0.775rem; color: var(--text-muted); margin-top: 0.2rem;">
+                Fields at 25 DAT have reached the ideal window for the second split of nitrogen.
+              </div>
+            </div>
+            <div style="padding: 0.85rem; background: rgba(255,255,255,0.025); border-left: 3px solid var(--accent-cyan); border-radius: 4px;">
+              <div style="font-size: 0.85rem; font-weight: 600; color: #ffffff;">Water Management: AWD Inspection</div>
+              <div style="font-size: 0.775rem; color: var(--text-muted); margin-top: 0.2rem;">
+                Check field water tube level before irrigating to conserve water table.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 2. YIELD PREDICTION VIEW                   -->
+    <!-- ========================================== -->
+    <section id="tab-prediction" class="tab-view" role="tabpanel" aria-labelledby="pred-heading">
+      <div class="page-header">
+        <div>
+          <h2 id="pred-heading" data-i18n="pred_title">Paddy Crop Yield Prediction</h2>
+          <p data-i18n="pred_subtitle">Enter agro-climatic, soil chemistry, and field parameters to compute expected harvest yield</p>
+        </div>
+        <div>
+          <button id="btn-autofill-weather" class="btn btn-secondary btn-sm" type="button" data-i18n="btn_autofill_weather">
+            Auto-Fill with District Weather
+          </button>
+        </div>
+      </div>
+
+      <div class="layout-2col">
+        <!-- Form Panel -->
+        <div class="glass-panel">
+          <form id="prediction-form" novalidate>
+            
+            <!-- Section 1: Location & Season -->
+            <div class="form-section-title" data-i18n="group_geo_season">Location & Crop Profile</div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label for="pred-district" class="form-label" data-i18n="label_district">District (மாவட்டம்)</label>
+                <select id="pred-district" class="form-select" required>
+                  <option value="Thanjavur">Thanjavur (தஞ்சாவூர்)</option>
+                  <option value="Tiruvarur">Tiruvarur (திருவாரூர்)</option>
+                  <option value="Nagapattinam">Nagapattinam (நாகப்பட்டினம்)</option>
+                  <option value="Mayiladuthurai">Mayiladuthurai (மயிலாடுதுறை)</option>
+                  <option value="Cuddalore">Cuddalore (கடலூர்)</option>
+                  <option value="Tiruchirappalli">Tiruchirappalli (திருச்சிராப்பள்ளி)</option>
+                  <option value="Madurai">Madurai (மதுரை)</option>
+                  <option value="Tirunelveli">Tirunelveli (திருநெல்வேலி)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="pred-season" class="form-label" data-i18n="label_season">Cropping Season (பருவம்)</label>
+                <select id="pred-season" class="form-select" required>
+                  <option value="Samba">Samba (சம்பா - Aug to Jan)</option>
+                  <option value="Kuruvai">Kuruvai (குறுவை - Jun to Sep)</option>
+                  <option value="Thaladi">Thaladi (தாளடி - Sep to Feb)</option>
+                  <option value="Navarai">Navarai (நவரை - Dec to Apr)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row-3">
+              <div class="form-group">
+                <label for="pred-soil" class="form-label" data-i18n="label_soil_type">Soil Classification</label>
+                <select id="pred-soil" class="form-select" required>
+                  <option value="Alluvial">Alluvial (வண்டல் மண்)</option>
+                  <option value="Clayey">Clayey (களிமண்)</option>
+                  <option value="Red Loam">Red Loam (செம்மண்)</option>
+                  <option value="Coastal Saline">Coastal Saline (உவர்மண்)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="pred-area" class="form-label" data-i18n="label_area">Cultivation Area</label>
+                <div class="form-input-wrap">
+                  <input type="number" id="pred-area" class="form-input has-unit" min="0.1" max="100" step="0.1" value="2.5" required>
+                  <span class="input-unit">ha</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="pred-prev-yield" class="form-label" data-i18n="label_previous_yield">Previous Yield</label>
+                <div class="form-input-wrap">
+                  <input type="number" id="pred-prev-yield" class="form-input has-unit" min="1000" max="8000" step="50" value="4300">
+                  <span class="input-unit">kg/ha</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 2: Weather Indicators -->
+            <div class="form-section-title" style="margin-top: 1rem;" data-i18n="group_weather_factors">Agro-Meteorological Factors</div>
+            <div class="form-row-3">
+              <div class="form-group">
+                <label for="pred-rainfall" class="form-label" data-i18n="label_rainfall">Seasonal Rainfall</label>
+                <div class="form-input-wrap">
+                  <input type="number" id="pred-rainfall" class="form-input has-unit" min="100" max="2500" value="1100" required>
+                  <span class="input-unit">mm</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="pred-temp" class="form-label" data-i18n="label_temperature">Avg Temperature</label>
+                <div class="form-input-wrap">
+                  <input type="number" id="pred-temp" class="form-input has-unit" min="15" max="45" step="0.5" value="31.5" required>
+                  <span class="input-unit">°C</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="pred-humidity" class="form-label" data-i18n="label_humidity">Relative Humidity</label>
+                <div class="form-input-wrap">
+                  <input type="number" id="pred-humidity" class="form-input has-unit" min="20" max="100" value="78" required>
+                  <span class="input-unit">%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 3: Soil Nutrients & Chemistry -->
+            <div class="form-section-title" style="margin-top: 1rem;" data-i18n="group_soil_chemistry">Soil Chemistry & Moisture</div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label for="pred-ph" class="form-label" data-i18n="label_soil_ph">Soil pH Level</label>
+                <div class="form-input-wrap">
+                  <input type="number" id="pred-ph" class="form-input has-unit" min="4.0" max="9.5" step="0.1" value="6.8" required>
+                  <span class="input-unit">pH</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="pred-moisture" class="form-label" data-i18n="label_moisture">Soil Moisture Content</label>
+                <div class="form-input-wrap">
+                  <input type="number" id="pred-moisture" class="form-input has-unit" min="10" max="100" value="74" required>
+                  <span class="input-unit">%</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row-3">
+              <div class="form-group">
+                <label for="pred-n" class="form-label" data-i18n="label_nitrogen">Nitrogen (N)</label>
+                <div class="form-input-wrap">
+                  <input type="number" id="pred-n" class="form-input has-unit" min="10" max="250" value="135" required>
+                  <span class="input-unit">kg/ha</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="pred-p" class="form-label" data-i18n="label_phosphorus">Phosphorus (P)</label>
+                <div class="form-input-wrap">
+                  <input type="number" id="pred-p" class="form-input has-unit" min="5" max="120" value="45" required>
+                  <span class="input-unit">kg/ha</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="pred-k" class="form-label" data-i18n="label_potassium">Potassium (K)</label>
+                <div class="form-input-wrap">
+                  <input type="number" id="pred-k" class="form-input has-unit" min="10" max="200" value="42" required>
+                  <span class="input-unit">kg/ha</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+              <button id="btn-submit-predict" type="submit" class="btn btn-primary btn-full" data-i18n="btn_compute_yield">
+                Calculate Predicted Yield
+              </button>
+              <button id="btn-reset-form" type="button" class="btn btn-secondary" style="min-width: 120px;" data-i18n="btn_reset_form">
+                Reset Form
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Output & Analytics Panel -->
+        <div>
+          <div id="prediction-results-area">
+            <!-- Initial Empty State -->
+            <div class="glass-panel" style="min-height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 2rem;">
+              <div style="font-size: 2.75rem; margin-bottom: 1rem;">🌾</div>
+              <h3 style="font-size: 1.15rem; color: #ffffff; margin-bottom: 0.5rem;" data-i18n="results_heading">
+                Prediction Results & Harvest Insights
+              </h3>
+              <p style="color: var(--text-muted); font-size: 0.85rem; max-width: 380px;">
+                Fill in the farm, soil, and meteorological details on the left, then click <strong>Calculate Predicted Yield</strong> to run the Random Forest model simulation.
+              </p>
+              <div style="margin-top: 1.5rem; display: flex; gap: 0.5rem;">
+                <span class="badge badge-green">TNAU Baselines</span>
+                <span class="badge badge-cyan">90% Confidence Bounds</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 3. WEATHER CENTER VIEW                     -->
+    <!-- ========================================== -->
+    <section id="tab-weather" class="tab-view" role="tabpanel" aria-labelledby="weather-heading">
+      <div class="page-header">
+        <div>
+          <h2 id="weather-heading" data-i18n="weather_title">Agro-Meteorological Weather Center</h2>
+          <p data-i18n="weather_subtitle">Localized forecasts, rainfall probabilities, and field activity advisories for Tamil Nadu districts</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <label for="weather-district-select" style="font-size: 0.825rem; color: var(--text-muted);" data-i18n="select_weather_district">District:</label>
+          <select id="weather-district-select" class="form-select" style="width: auto; min-width: 170px;">
+            <option value="Thanjavur">Thanjavur (தஞ்சாவூர்)</option>
+            <option value="Tiruvarur">Tiruvarur (திருவாரூர்)</option>
+            <option value="Nagapattinam">Nagapattinam (நாகப்பட்டினம்)</option>
+            <option value="Mayiladuthurai">Mayiladuthurai (மயிலாடுதுறை)</option>
+            <option value="Cuddalore">Cuddalore (கடலூர்)</option>
+            <option value="Tiruchirappalli">Tiruchirappalli (திருச்சிராப்பள்ளி)</option>
+            <option value="Madurai">Madurai (மதுரை)</option>
+            <option value="Tirunelveli">Tirunelveli (திருநெல்வேலி)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="layout-2col">
+        <!-- Weather Detail Column -->
+        <div>
+          <div id="weather-current-display"></div>
+
+          <!-- Weather Alert Box -->
+          <div class="glass-panel" style="margin-top: 1.5rem; border-left: 3px solid var(--accent-amber);">
+            <h4 style="font-size: 0.95rem; color: #ffffff; margin-bottom: 0.35rem;" data-i18n="agro_alert_title">
+              Field Action Advisory based on Weather
+            </h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted);" data-i18n="agro_alert_content">
+              Moderate showers forecast in the next 48-72 hours. It is advised to postpone nitrogen top-dressing (Urea) and maintain field drain gates to prevent waterlogging in nursery beds.
+            </p>
+          </div>
+        </div>
+
+        <!-- 5-Day Forecast & Trend Column -->
+        <div class="glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+            <h3 style="font-size: 1.1rem; color: #ffffff;" data-i18n="forecast_5day_title">5-Day Agricultural Forecast</h3>
+            <span class="badge badge-green">Open-Meteo Feed</span>
+          </div>
+
+          <!-- Forecast sparkline -->
+          <div id="weather-sparkline-container" style="margin-bottom: 1rem;"></div>
+
+          <!-- 5-Day List -->
+          <div id="weather-forecast-list" class="forecast-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 4. SOIL ANALYSIS VIEW                      -->
+    <!-- ========================================== -->
+    <section id="tab-soil" class="tab-view" role="tabpanel" aria-labelledby="soil-heading">
+      <div class="page-header">
+        <div>
+          <h2 id="soil-heading" data-i18n="soil_title">Soil Fertility & Nutrient Health Analysis</h2>
+          <p data-i18n="soil_subtitle">Evaluation of primary macronutrients (N-P-K), pH, and soil moisture balance against TNAU baselines</p>
+        </div>
+      </div>
+
+      <div class="layout-2col">
+        <!-- N-P-K Comparative Tracks -->
+        <div class="glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="font-size: 1.1rem; color: #ffffff;" data-i18n="npk_breakdown_title">
+              Primary Macronutrients (kg/ha) vs TNAU Standards
+            </h3>
+            <span class="badge badge-green">Season: Samba</span>
+          </div>
+
+          <div id="soil-npk-comparison-container"></div>
+        </div>
+
+        <!-- Soil Score & Physical Properties -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          <!-- Health Score Card -->
+          <div class="glass-panel" style="text-align: center;">
+            <h3 style="font-size: 1.05rem; color: #ffffff; margin-bottom: 1rem;" data-i18n="soil_score_title">
+              Overall Soil Health Index
+            </h3>
+            <div id="soil-health-gauge-container"></div>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.75rem;" data-i18n="soil_status_sub">
+              Balanced macronutrient availability for vegetative paddy tillering
+            </p>
+          </div>
+
+          <!-- Property Grid -->
+          <div class="glass-panel">
+            <h4 style="font-size: 0.95rem; color: #ffffff; margin-bottom: 1rem;" data-i18n="soil_properties_title">
+              Physical & Chemical Soil Properties
+            </h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div style="background: rgba(255,255,255,0.03); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--glass-border);">
+                <div style="font-size: 0.75rem; color: var(--text-muted);" data-i18n="prop_ph">Soil pH Reaction</div>
+                <div style="font-size: 1.25rem; font-weight: 700; color: #ffffff; margin-top: 0.2rem;" id="soil-prop-ph-val">6.8</div>
+                <div style="font-size: 0.7rem; color: var(--accent-leaf);">Neutral (Ideal: 6.0-7.5)</div>
+              </div>
+              <div style="background: rgba(255,255,255,0.03); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--glass-border);">
+                <div style="font-size: 0.75rem; color: var(--text-muted);" data-i18n="prop_moisture">Field Soil Moisture</div>
+                <div style="font-size: 1.25rem; font-weight: 700; color: #ffffff; margin-top: 0.2rem;" id="soil-prop-moisture-val">74%</div>
+                <div style="font-size: 0.7rem; color: var(--accent-cyan);">Adequate Saturation</div>
+              </div>
+              <div style="background: rgba(255,255,255,0.03); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--glass-border);">
+                <div style="font-size: 0.75rem; color: var(--text-muted);" data-i18n="prop_ec">Electrical Conductivity (EC)</div>
+                <div style="font-size: 1.1rem; font-weight: 700; color: #ffffff; margin-top: 0.2rem;" data-i18n="prop_ec_val">0.62 dS/m</div>
+                <div style="font-size: 0.7rem; color: var(--accent-leaf);">Non-Saline</div>
+              </div>
+              <div style="background: rgba(255,255,255,0.03); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--glass-border);">
+                <div style="font-size: 0.75rem; color: var(--text-muted);" data-i18n="prop_organic">Soil Organic Carbon</div>
+                <div style="font-size: 1.1rem; font-weight: 700; color: #ffffff; margin-top: 0.2rem;" data-i18n="prop_organic_val">0.78%</div>
+                <div style="font-size: 0.7rem; color: var(--accent-leaf);">Medium-High</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 5. RECOMMENDATIONS VIEW                    -->
+    <!-- ========================================== -->
+    <section id="tab-recommendations" class="tab-view" role="tabpanel" aria-labelledby="recom-heading">
+      <div class="page-header">
+        <div>
+          <h2 id="recom-heading" data-i18n="recom_title">Crop Optimization & Farming Advisory</h2>
+          <p data-i18n="recom_subtitle">Customized fertilizer schedule, irrigation regimen, and pest prevention guidelines</p>
+        </div>
+      </div>
+
+      <!-- Sub-Tab Filter -->
+      <div class="sub-nav-tabs">
+        <button class="sub-tab-btn active" data-subtab="fertilizer" data-i18n="tab_fertilizer">Fertilizer Schedule</button>
+        <button class="sub-tab-btn" data-subtab="irrigation" data-i18n="tab_irrigation">Irrigation Regimen (AWD)</button>
+        <button class="sub-tab-btn" data-subtab="pest" data-i18n="tab_pest">Pest & Disease Monitoring</button>
+      </div>
+
+      <!-- Sub-Tab 1: Fertilizer Schedule -->
+      <div id="subtab-fertilizer" class="recom-subtab-content">
+        <div class="glass-panel">
+          <h3 style="font-size: 1.15rem; color: #ffffff; margin-bottom: 1.25rem;" data-i18n="fert_schedule_title">
+            TNAU Split Application Plan for Paddy
+          </h3>
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <div class="recom-card">
+              <h4>
+                <span data-i18n="fert_stage_1">Basal Application (At Transplanting)</span>
+                <span class="badge badge-green">Stage 1</span>
+              </h4>
+              <p data-i18n="fert_stage_1_desc">
+                Apply 25% Nitrogen, 100% Phosphorus (DAP/Superphosphate), and 50% Potassium (MOP). Incorporate into puddle soil.
+              </p>
+            </div>
+            <div class="recom-card">
+              <h4>
+                <span data-i18n="fert_stage_2">Active Tillering (20-25 DAT)</span>
+                <span class="badge badge-amber">Stage 2 &bull; Active Now</span>
+              </h4>
+              <p data-i18n="fert_stage_2_desc">
+                Top-dress 50% Nitrogen (Urea) when soil has thin water film. Ensure weeds are cleared before application.
+              </p>
+            </div>
+            <div class="recom-card">
+              <h4>
+                <span data-i18n="fert_stage_3">Panicle Initiation (40-45 DAT)</span>
+                <span class="badge badge-cyan">Stage 3</span>
+              </h4>
+              <p data-i18n="fert_stage_3_desc">
+                Apply remaining 25% Nitrogen and 50% Potassium to boost grain filling and reduce empty spikelets.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub-Tab 2: Irrigation Regimen -->
+      <div id="subtab-irrigation" class="recom-subtab-content" style="display: none;">
+        <div class="glass-panel">
+          <h3 style="font-size: 1.15rem; color: #ffffff; margin-bottom: 1rem;" data-i18n="irri_awd_title">
+            Alternate Wetting and Drying (AWD) Water Saving Method
+          </h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;" data-i18n="irri_awd_desc">
+            Install a perforated field water pipe (15cm diameter). Allow field water to drop 15cm below the soil surface before re-irrigating up to 5cm depth. Conserves up to 30% water without reducing yield.
+          </p>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+            <div style="background: rgba(255,255,255,0.03); padding: 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--glass-border); text-align: center;">
+              <div style="font-size: 1.75rem;">📏</div>
+              <div style="font-weight: 700; color: #ffffff; margin-top: 0.5rem;">Tube Placement</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">Insert perforated PVC tube 20cm into root zone</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); padding: 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--glass-border); text-align: center;">
+              <div style="font-size: 1.75rem;">📉</div>
+              <div style="font-weight: 700; color: #ffffff; margin-top: 0.5rem;">Threshold Level</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">Irrigate only when water disappears 15cm below soil</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); padding: 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--glass-border); text-align: center;">
+              <div style="font-size: 1.75rem;">🌾</div>
+              <div style="font-weight: 700; color: #ffffff; margin-top: 0.5rem;">Flowering Exception</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">Keep 2-4cm standing water during flowering stage</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub-Tab 3: Pest & Disease Monitoring -->
+      <div id="subtab-pest" class="recom-subtab-content" style="display: none;">
+        <div class="glass-panel">
+          <h3 style="font-size: 1.15rem; color: #ffffff; margin-bottom: 1.25rem;" data-i18n="pest_title">
+            Prevalent Regional Pest Alerts
+          </h3>
+          <div id="recom-pest-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 6. HISTORY AUDIT VIEW                      -->
+    <!-- ========================================== -->
+    <section id="tab-history" class="tab-view" role="tabpanel" aria-labelledby="hist-heading">
+      <div class="page-header">
+        <div>
+          <h2 id="hist-heading" data-i18n="hist_title">Prediction & Harvest History</h2>
+          <p data-i18n="hist_subtitle">Audit log of prior simulation queries, validation logs, and seasonal yield outcomes</p>
+        </div>
+        <div style="display: flex; gap: 0.75rem;">
+          <input type="text" id="history-search" class="form-input" style="width: 250px;" placeholder="Filter by district or season..." data-i18n-placeholder="search_placeholder">
+          <button id="btn-export-history" class="btn btn-secondary btn-sm" type="button" data-i18n="btn_export">
+            Export History (CSV)
+          </button>
+        </div>
+      </div>
+
+      <div class="glass-panel" style="padding: 0;">
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th data-i18n="col_id">Log ID</th>
+                <th data-i18n="col_date">Date</th>
+                <th data-i18n="col_district">District</th>
+                <th data-i18n="col_season">Season</th>
+                <th data-i18n="col_soil">Soil Type</th>
+                <th data-i18n="col_area">Area (ha)</th>
+                <th data-i18n="col_predicted">Predicted (Q/ha)</th>
+                <th data-i18n="col_actual">Actual (Q/ha)</th>
+                <th data-i18n="col_confidence">Confidence</th>
+                <th data-i18n="col_status">Status</th>
+              </tr>
+            </thead>
+            <tbody id="history-table-body">
+              <!-- Dynamically populated from state.historyRecords -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Script Modules -->
+  <script src="js/data.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
