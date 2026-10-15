@@ -1,179 +1,325 @@
-# AgriSense-AI: AI-Powered Paddy Yield Prediction & Smart Farming Platform
+# 🌾 AgriSense-AI: AI-Powered Paddy Yield Prediction & Smart Farming Platform
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110%2B-009688.svg)](https://fastapi.tiangolo.com/)
 [![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-1.4%2B-F7931E.svg)](https://scikit-learn.org/)
 [![SQLite](https://img.shields.io/badge/SQLite-3-003B57.svg)](https://www.sqlite.org/)
-[![UI](https://img.shields.io/badge/UI-Liquid%20Glass-4CAF50.svg)](#frontend-ui)
-[![Tests](https://img.shields.io/badge/Tests-60%2F60%20Passed-brightgreen.svg)](#testing)
-[![Languages](https://img.shields.io/badge/Languages-English%20%7C%20%E0%AE%A4%E0%AE%AE%E0%AE%BF%E0%AE%B4%E0%AF%8D-purple.svg)](#bilingual-support)
+[![UI](https://img.shields.io/badge/UI-Liquid%20Glass-4CAF50.svg)](#-user-interface)
+[![Tests](https://img.shields.io/badge/Tests-60%2F60%20Passed-brightgreen.svg)](#-running-automated-tests)
+[![Languages](https://img.shields.io/badge/Languages-English%20%7C%20%E0%AE%A4%E0%AE%AE%E0%AE%BF%E0%AE%B4%E0%AF%8D-purple.svg)](#-bilingual-support)
 
-**AgriSense-AI** is a smart agricultural decision-support platform designed specifically for **paddy (rice) farming in Tamil Nadu**. It combines machine learning yield forecasting, real-time agro-meteorology, and expert agronomic rules grounded in **Tamil Nadu Agricultural University (TNAU)** standards, accessible in both **English** and **Tamil (`தமிழ்`)**.
-
----
-
-## 1. Key Capabilities & Features
-
-- **🌾 AI Yield Prediction:** Scikit-learn Random Forest Regressor calibrated on Tamil Nadu agro-climatic zones, predicting paddy yield ($t/\text{ha}$, $\text{quintals/ha}$, and $\text{kg/ha}$) using rainfall, temperature, humidity, soil pH, NPK, and moisture.
-- **🌿 TNAU Smart Farming Advisory:** Rule engine delivering actionable Alternate Wetting and Drying (AWD) water management (saving 25–30% irrigation water), stage-aware NPK split schedules, and pest alerts (blast and Brown Planthopper).
-- **🌦️ Hyperlocal Weather Integration:** Real-time conditions and 5-day forecasts via Open-Meteo API across all 38 Tamil Nadu districts, with offline fallback to climatological normals.
-- **💧 Liquid Glass UI:** Ultra-lightweight, zero-build Vanilla HTML5/CSS3/JavaScript interface featuring a frosted glass aesthetic with subtle transparency, backdrop filters, and responsive layout.
-- **🌐 Full Bilingual Localization:** Instant zero-reload switching between **English** and **Tamil (`தமிழ்`)** across all interface cards, validation messages, and agronomic recommendations.
-- **📊 Farm Records & Harvest Tracking:** Relational SQLite persistence for farm profiles, prediction history audit logs, and post-harvest yield variance analysis.
+> **AgriSense-AI** is an intelligent decision-support system built for **paddy (rice) farmers in Tamil Nadu**.  
+> It accurately forecasts crop yield using Machine Learning and delivers scientific farming advisories (irrigation, fertilizer split schedules, and pest alerts) based on **Tamil Nadu Agricultural University (TNAU)** standards — in both **English** and **Tamil (`தமிழ்`)**.
 
 ---
 
-## 2. Engineering & Development Lifecycle
-
-AgriSense-AI was developed as a complete end-to-end platform spanning **10 modular engineering milestones**:
-1. **System Architecture & Requirements:** Contract-driven interface definitions for ML, weather, database, and bilingual localization.
-2. **Liquid Glass Frontend:** Zero-dependency, responsive UI with custom SVG data visualizations.
-3. **Agro-Dataset Engineering:** Data schema, cleaning, deduplication, and preprocessors for Tamil Nadu cropping seasons (*Kuruvai*, *Samba*, *Thaladi*, *Navarai*).
-4. **Machine Learning Model:** Random Forest Regressor achieving $R^2 \approx 0.87$ and $\text{MAE} \approx 0.33\,t/\text{ha}$, serialized with Joblib.
-5. **FastAPI REST Backend:** Asynchronous endpoints with strict Pydantic v2 schemas and CORS negotiation.
-6. **Agro-Weather Service:** Open-Meteo integration with in-memory caching and resilient network fallbacks.
-7. **TNAU Expert Recommendation Engine:** Explainable agronomic rules for irrigation, soil amendments, and pest monitoring.
-8. **Relational Database & Localization:** SQLite schema with foreign key cascades and complete English/Tamil dictionaries.
-9. **Full Stack Integration:** Live end-to-end API wiring, history audit trail, and client-side report generation.
-10. **Testing & Containerization:** 60/60 automated pytest suite, Docker Compose orchestration, and one-click launch scripts.
-
----
-
-## 3. System Architecture
-
-```
-+-------------------------------------------------------------------------------+
-|                       VANILLA FRONTEND (Liquid Glass UI)                      |
-|   - index.html (Semantic Structure)   - style.css (Glassmorphic Design System)|
-|   - api.js (Backend Client Contract)   - i18n.js (English / Tamil Dictionary)  |
-+---------------------------------------+---------------------------------------+
-                                        | HTTP / JSON REST (Port 3000 -> 8000)
-                                        v
-+-------------------------------------------------------------------------------+
-|                          FASTAPI BACKEND SERVICE                              |
-|   - POST /api/v1/crop/predict         : Random Forest Yield Inference         |
-|   - POST /recommendations             : TNAU Agronomic Rule Engine            |
-|   - GET  /api/v1/weather/current      : Open-Meteo Weather Broker             |
-|   - GET  /api/v1/history/logs         : SQLite History & Harvest Tracking     |
-|   - GET  /api/v1/i18n/{lang}          : Bilingual Translation Dictionaries    |
-+-------------------+-----------------------------------+-----------------------+
-                    |                                   |
-                    v                                   v
-+-----------------------------------+   +---------------------------------------+
-|        SQLITE DATABASE            |   |          ML INFERENCE ENGINE          |
-| - Farms & Fields                  |   | - Scikit-Learn Random Forest Model    |
-| - Prediction History Logs         |   | - ColumnTransformer Preprocessor      |
-| - Actual Harvest Variance Logs    |   | - TNAU Agronomic Expert Rules         |
-+-----------------------------------+   +---------------------------------------+
-```
+## 📖 Table of Contents
+1. [What is AgriSense-AI?](#-what-is-agrisense-ai)
+2. [Key Features](#-key-features)
+3. [How to Clone & Pull the Project](#-how-to-clone--pull-the-project)
+4. [How to Run the Application (All Commands)](#-how-to-run-the-application)
+   - [Method 1: One-Click Startup Scripts (Easiest)](#method-1-one-click-startup-scripts-easiest)
+   - [Method 2: Docker Compose (Containerized)](#method-2-docker-compose-containerized)
+   - [Method 3: Manual Step-by-Step (Terminal)](#method-3-manual-step-by-step-terminal)
+5. [Application URLs & Access Points](#-application-urls--access-points)
+6. [Testing the APIs with cURL](#-testing-the-apis-with-curl)
+7. [Running Automated Tests](#-running-automated-tests)
+8. [Project Folder Structure](#-project-folder-structure)
+9. [Hackathon Demo & Presentation Guide](#-hackathon-demo--presentation-guide)
+10. [Troubleshooting & FAQs](#-troubleshooting--faqs)
 
 ---
 
-## 4. Project Structure
+## 🌱 What is AgriSense-AI?
 
-```
-AGRI/
-├── backend/
-│   ├── app/
-│   │   ├── api/v1/endpoints/           # REST endpoints (predict, weather, history, etc.)
-│   │   ├── core/                       # App settings, CORS, and localization helpers
-│   │   ├── db/                         # SQLite session, ORM models, and CRUD operations
-│   │   ├── schemas/                    # Pydantic v2 request/response schemas
-│   │   └── services/                   # ML inference, weather, and recommendation engine
-│   ├── tests/                          # 49 automated pytest backend test cases
-│   └── main.py                         # FastAPI application entry point
-├── frontend/
-│   ├── css/style.css                   # Liquid Glass design system and typography
-│   ├── js/
-│   │   ├── api.js                      # REST API client with timeout and error extraction
-│   │   ├── app.js                      # UI controller, event handlers, and presets
-│   │   ├── charts.js                   # Lightweight SVG data charts
-│   │   ├── data.js                     # District agro-climatic lookup tables
-│   │   └── i18n.js                     # Client-side English/Tamil translation dictionary
-│   └── index.html                      # Semantic HTML5 single-page application
-├── ml/
-│   ├── data/raw/                       # Tamil Nadu paddy dataset
-│   ├── saved_models/                   # Trained model (.joblib) and feature metadata
-│   ├── src/                            # Training, preprocessing, and validation scripts
-│   └── tests/                          # 11 automated pytest ML test cases
-├── Dockerfile                          # Production backend container definition
-├── docker-compose.yml                  # Multi-container orchestration (Backend + Frontend)
-├── run.bat / run.ps1 / run.sh          # One-click startup scripts
-├── requirements.txt                    # Pinned Python dependencies
-├── HACKATHON_DEMO_GUIDE.md             # 5-minute pitch script, test presets, and FAQ
-└── README.md                           # Project documentation
-```
+Smallholder paddy farmers across Tamil Nadu face unpredictable monsoon shifts, soil nutrient imbalances from indiscriminate fertilizer use, and groundwater depletion. 
+
+**AgriSense-AI solves this by bringing three technologies together:**
+1. **Machine Learning Yield Prediction:** An AI model predicts harvest output ($t/\text{ha}$) before sowing, based on district, season, soil tests, and environmental conditions.
+2. **TNAU Expert Advisory:** Rule-based agronomic guidance for **Alternate Wetting and Drying (AWD)** water management (saving 25–30% water), stage-aware urea split dosing, and pest risk alerts (blast and BPH).
+3. **Hyperlocal Weather:** Real-time weather and 5-day forecasts via Open-Meteo across all 38 Tamil Nadu districts.
+4. **Bilingual Accessibility:** Instant toggle between English and native Tamil (`தமிழ்`) for grassroots usability.
 
 ---
 
-## 5. Quick Start & Execution
+## ✨ Key Features
 
-### Prerequisites
-- Python 3.10, 3.11, or 3.12
-- Web browser (Chrome, Edge, Firefox, Safari)
+- **🌾 AI Yield Predictor:** Random Forest Regressor calibrated on Tamil Nadu paddy data ($R^2 \approx 0.87$, $\text{MAE} \approx 0.33\,t/\text{ha}$).
+- **💧 Alternate Wetting & Drying (AWD):** Tells farmers when to irrigate and when to dry the soil to conserve delta groundwater.
+- **🧪 Soil Health & NPK Optimization:** Compares farmer soil test readings ($N, P, K, \text{pH}$) against TNAU standards and recommends exact corrective dosages.
+- **🐛 Prophylactic Pest Monitoring:** Triggers early warnings for fungal blast and Brown Planthopper (BPH) based on temperature, humidity, and growth stage.
+- **🎨 Liquid Glass UI:** Clean, responsive, glassmorphic interface with zero build dependencies — works smoothly on desktop and mobile browsers.
+- **🌐 100% Bilingual:** Full localization in **English** and **Tamil (`தமிழ்`)** without reloading the page.
+- **💾 SQLite Audit Trail:** Saves prediction history, logs actual harvest outcomes, and calculates yield variance.
 
-### Option A: One-Click Startup Scripts (Recommended)
-Launch both the FastAPI backend (`:8000`) and the frontend (`:3000`) with a single command:
-- **Windows (Command Prompt):** Double-click or run `run.bat`
-- **Windows (PowerShell):** Run `.\run.ps1`
-- **Linux / macOS:** Run `./run.sh`
+---
 
-### Option B: Docker Compose
-Run the entire stack in isolated containers:
+## 📥 How to Clone & Pull the Project
+
+### 1. Clone the Repository
+Open your terminal (PowerShell, Command Prompt, or Bash) and run:
+
 ```bash
+# Clone the repository from GitHub
+git clone https://github.com/meghashyam0711/agrisense-ai.git
+
+# Move into the project directory
+cd agrisense-ai
+```
+
+### 2. Pull Latest Changes (If already cloned)
+If you already cloned the repository and want the newest updates:
+
+```bash
+# Fetch and pull the latest commits from the main branch
+git pull origin main
+```
+
+---
+
+## 🚀 How to Run the Application
+
+You can run AgriSense-AI using any of the 3 methods below.
+
+---
+
+### Method 1: One-Click Startup Scripts (Easiest)
+
+We provide pre-configured startup scripts that launch both the **FastAPI Backend (port 8000)** and the **Frontend Web App (port 3000)** simultaneously:
+
+#### On Windows (Command Prompt):
+```cmd
+run.bat
+```
+*(Or simply double-click the `run.bat` file in Windows File Explorer)*
+
+#### On Windows (PowerShell):
+```powershell
+.\run.ps1
+```
+
+#### On Linux / macOS:
+```bash
+# Grant execution permissions (first time only)
+chmod +x run.sh
+
+# Run the script
+./run.sh
+```
+
+---
+
+### Method 2: Docker Compose (Containerized)
+
+If you have Docker and Docker Compose installed, run the entire stack with zero manual environment configuration:
+
+```bash
+# Build images and start all containers in background
 docker compose up --build
+
+# To stop the containers when finished
+docker compose down
 ```
-- **Frontend UI:** [http://localhost:3000](http://localhost:3000)
-- **Backend API:** [http://localhost:8000](http://localhost:8000)
-- **Interactive API Docs (Swagger):** [http://localhost:8000/docs](http://localhost:8000/docs)
 
-### Option C: Manual Setup
+---
+
+### Method 3: Manual Step-by-Step (Terminal)
+
+If you prefer running the backend and frontend separately:
+
+#### Step 1: Create a Python Virtual Environment & Install Dependencies
 ```bash
-# 1. Install dependencies
+# 1. Create a virtual environment (Python 3.10, 3.11, or 3.12 recommended)
+python -m venv venv
+
+# 2. Activate the virtual environment
+# On Windows (PowerShell):
+.\venv\Scripts\Activate.ps1
+# On Windows (Command Prompt):
+.\venv\Scripts\activate.bat
+# On Linux / macOS:
+source venv/bin/activate
+
+# 3. Upgrade pip and install all required packages
+pip install --upgrade pip
 pip install -r requirements.txt
+```
 
-# 2. Run backend in Terminal 1
+#### Step 2: Start the FastAPI Backend
+Open a terminal window and run:
+```bash
+# Navigate to backend directory
 cd backend
-python -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
 
-# 3. Serve frontend in Terminal 2
+# Start the FastAPI server with auto-reload
+python -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
+```
+*(The backend is now live at `http://127.0.0.1:8000`)*
+
+#### Step 3: Start the Frontend Web App
+Open a **second** terminal window and run:
+```bash
+# Navigate to frontend directory
 cd frontend
+
+# Start a lightweight Python HTTP server on port 3000
 python -m http.server 3000
 ```
-Open **[http://localhost:3000](http://localhost:3000)** in your browser.
+*(The frontend is now accessible at `http://127.0.0.1:3000`)*
 
 ---
 
-## 6. Automated Testing Suite
+## 🌐 Application URLs & Access Points
 
-AgriSense-AI includes **60 automated tests** covering ML models, API contracts, database constraints, recommendation logic, and Tamil Unicode rendering:
+Once running, access the services using these links:
+
+| Service | URL | Description |
+|:---|:---|:---|
+| **🌾 Frontend Application** | [http://127.0.0.1:3000](http://127.0.0.1:3000) | Main user interface (Yield prediction, weather, advisory, history) |
+| **⚡ Backend API Root** | [http://127.0.0.1:8000](http://127.0.0.1:8000) | Operational status and API metadata |
+| **📖 Interactive API Docs** | [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) | Interactive Swagger UI (test endpoints directly in browser) |
+| **❤️ Health Check Endpoint** | [http://127.0.0.1:8000/health](http://127.0.0.1:8000/health) | Verifies model status (`v1.0.0`) and database readiness |
+
+---
+
+## 💡 Testing the APIs with cURL
+
+You can test the backend directly using your terminal:
+
+### 1. Check System Health
+```bash
+curl -X GET "http://127.0.0.1:8000/health"
+```
+
+### 2. Predict Crop Yield (Sample Payload for Thanjavur Kuruvai)
+```bash
+curl -X POST "http://127.0.0.1:8000/api/v1/crop/predict" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "district": "Thanjavur",
+    "season": "Kuruvai",
+    "soil_type": "Clayey",
+    "area_hectares": 1.0,
+    "nitrogen_kg_ha": 120.0,
+    "phosphorus_kg_ha": 45.0,
+    "potassium_kg_ha": 45.0,
+    "soil_ph": 6.8,
+    "rainfall_mm": 950.0,
+    "temperature_c": 28.5,
+    "humidity_pct": 78.0,
+    "soil_moisture_pct": 68.0,
+    "previous_yield_tonnes_ha": 4.8
+  }'
+```
+
+### 3. Fetch Live Weather for a District
+```bash
+curl -X GET "http://127.0.0.1:8000/api/v1/weather/current?district=Thanjavur"
+```
+
+### 4. Fetch Tamil (`தமிழ்`) Translation Dictionary
+```bash
+curl -X GET "http://127.0.0.1:8000/api/v1/i18n/ta"
+```
+
+---
+
+## 🧪 Running Automated Tests
+
+AgriSense-AI includes **60 automated tests** across ML inference, FastAPI routes, SQLite database operations, TNAU rules, and bilingual localization:
 
 ```bash
+# Run the complete test suite with verbose output
 pytest -v
 ```
 
+### Expected Output:
 ```
-backend/tests/test_api.py (10 tests) .............. PASSED
-backend/tests/test_database.py (8 tests) ........... PASSED
-backend/tests/test_i18n.py (6 tests) ............... PASSED
-backend/tests/test_integration.py (8 tests) ........ PASSED
-backend/tests/test_recommendations.py (17 tests) ... PASSED
-ml/tests/test_model.py (6 tests) ................... PASSED
-ml/tests/test_preprocessing.py (5 tests) ........... PASSED
-============================= 60 passed in 3.51s ==============================
+============================= test session starts ==============================
+backend/tests/test_api.py (10 tests) .............. PASSED [ 16%]
+backend/tests/test_database.py (8 tests) ........... PASSED [ 30%]
+backend/tests/test_i18n.py (6 tests) ............... PASSED [ 40%]
+backend/tests/test_integration.py (8 tests) ........ PASSED [ 53%]
+backend/tests/test_recommendations.py (17 tests) ... PASSED [ 81%]
+ml/tests/test_model.py (6 tests) ................... PASSED [ 91%]
+ml/tests/test_preprocessing.py (5 tests) ........... PASSED [100%]
+
+============================= 60 passed in 3.51s ===============================
 ```
 
 ---
 
-## 7. Hackathon Demo & Presentation
+## 📁 Project Folder Structure
 
-A comprehensive presentation guide with a 5-minute judging script, test presets (Thanjavur, Nagapattinam, Madurai), and agronomic rationale is available in:
-
-👉 **[HACKATHON_DEMO_GUIDE.md](HACKATHON_DEMO_GUIDE.md)**
+```
+agrisense-ai/
+├── backend/
+│   ├── app/
+│   │   ├── api/v1/endpoints/    # REST routes (predict, weather, history, etc.)
+│   │   ├── core/                # Config, CORS settings, and i18n helpers
+│   │   ├── db/                  # SQLite models, engine, and CRUD methods
+│   │   ├── schemas/             # Pydantic v2 validation contracts
+│   │   └── services/            # ML service, Open-Meteo client, TNAU rules
+│   ├── tests/                   # Backend and integration pytest suites
+│   └── main.py                  # FastAPI application entry point
+├── frontend/
+│   ├── css/style.css            # Liquid Glass design system & styling
+│   ├── js/
+│   │   ├── api.js               # REST client with timeouts & error handlers
+│   │   ├── app.js               # Main UI event logic & preset fillers
+│   │   ├── charts.js            # Responsive SVG charts
+│   │   ├── data.js              # District agro-climatic coordinates
+│   │   └── i18n.js              # English/Tamil translation dictionary
+│   └── index.html               # Semantic single-page application
+├── ml/
+│   ├── data/raw/                # Tamil Nadu paddy dataset
+│   ├── saved_models/            # Trained Random Forest model (.joblib)
+│   ├── src/                     # Preprocessing, training, and inference scripts
+│   └── tests/                   # Model and preprocessing unit tests
+├── Dockerfile                   # Production backend container definition
+├── docker-compose.yml           # Multi-container orchestration (Backend + Nginx)
+├── run.bat                      # Windows Command Prompt launcher
+├── run.ps1                      # Windows PowerShell launcher
+├── run.sh                       # Linux / macOS Bash launcher
+├── requirements.txt             # Pinned Python package dependencies
+├── HACKATHON_DEMO_GUIDE.md      # 5-minute pitch script, test presets, and FAQ
+└── README.md                    # Project documentation
+```
 
 ---
 
-## 8. Responsible AI & Agronomic Disclaimers
+## 🏆 Hackathon Demo & Presentation Guide
+
+If you are demonstrating this project to hackathon judges or evaluators:
+- Review the **5-minute live pitch script**
+- Use the **pre-tested demo presets** (Thanjavur Kuruvai, Nagapattinam Flood Risk, Madurai Drought)
+- Read the technical FAQ and architectural justification
+
+👉 **[Open HACKATHON_DEMO_GUIDE.md](HACKATHON_DEMO_GUIDE.md)**
+
+---
+
+## 🔧 Troubleshooting & FAQs
+
+### Q: Port 8000 or Port 3000 is already in use?
+**A:** If another application is using port 8000 or 3000, specify a different port:
+```bash
+# Run backend on port 8080:
+python -m uvicorn main:app --reload --port 8080
+
+# Run frontend on port 3001:
+python -m http.server 3001
+```
+
+### Q: Does this work completely offline without internet?
+**A:** **Yes!** The frontend, FastAPI backend, SQLite database, and ML prediction model have zero cloud dependencies and run fully offline. Only real-time weather uses Open-Meteo, and if the network is disconnected, it gracefully falls back to cached climatological normals.
+
+### Q: Why did we use Random Forest over Deep Learning?
+**A:** Tabular agricultural data has non-linear feature interactions (such as pH buffering nutrient uptake). Random Forest prevents overfitting on regional datasets, outputs feature importances, and infers in **under 15 milliseconds** on low-power devices.
+
+---
+
+## 📜 Responsible AI Disclaimer
 
 > [!NOTE]
-> **Decision-Support Notice:** Predictions and recommendations provided by AgriSense-AI are intended as **decision-support tools** and do not constitute certified financial or crop insurance guarantees. Real-world crop yields depend on localized micro-climates, seed varieties, canal water rotations, and unforeseen pest outbreaks. Farmers are encouraged to consult their local **Krishi Vigyan Kendra (KVK)** or Village Agricultural Extension Officer (VAO).
+> **Advisory Purpose:** Predictions and recommendations generated by AgriSense-AI are designed as **decision-support estimates** for farmers and agricultural extension officers. They do not constitute crop insurance or financial yield guarantees. Real-world yields depend on localized micro-climates, seed varieties, canal water rotations, and unforeseen pest outbreaks.
